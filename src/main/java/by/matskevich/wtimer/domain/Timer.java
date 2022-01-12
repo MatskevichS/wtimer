@@ -1,6 +1,6 @@
 package by.matskevich.wtimer.domain;
 
-import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.scene.control.Label;
 
 import java.time.LocalTime;
@@ -9,22 +9,23 @@ import java.time.format.DateTimeFormatter;
 import static by.matskevich.wtimer.service.TimerService.savePastTime;
 
 
-public class Timer extends AnimationTimer {
+public class Timer extends Thread {
 
     private final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
     private final LocalTime MAX_TIME = LocalTime.of(23, 59, 59);
     private final Integer ONE = 1;
 
     private Label timeField;
-    private long lastTime;
     private LocalTime time;
     private Integer days;
     private boolean isStart;
+    private boolean isCancel;
     private boolean isPause;
 
     {
         days = 0;
         time = LocalTime.of(0, 0, 0);
+        isCancel = false;
     }
 
     public Timer() {
@@ -35,6 +36,22 @@ public class Timer extends AnimationTimer {
         this.days = days;
         this.isStart = isStart;
         this.isPause = isPause;
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (!isCancel) {
+                Thread.sleep(1000);
+                if (isStart && !isPause) {
+                    tick();
+                }
+                Platform.runLater(() -> timeField.setText(getPastTime()));
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public LocalTime getTime() {
@@ -61,6 +78,10 @@ public class Timer extends AnimationTimer {
         isStart = start;
     }
 
+    public void cancel() {
+        isCancel = true;
+    }
+
     public boolean isPause() {
         return isPause;
     }
@@ -71,19 +92,6 @@ public class Timer extends AnimationTimer {
 
     public void setTimeField(Label timeField) {
         this.timeField = timeField;
-    }
-
-    @Override
-    public void handle(long now) {
-        if (lastTime != 0) {
-            if (now > lastTime + 1_000_000_000) {
-                tick();
-                timeField.setText(getPastTime());
-                lastTime = now;
-            }
-        } else {
-            lastTime = now;
-        }
     }
 
     private void tick() {
@@ -107,7 +115,6 @@ public class Timer extends AnimationTimer {
     }
 
     public void dropping() {
-        this.stop();
         time = LocalTime.of(0, 0, 0);
         isStart = false;
         isPause = false;

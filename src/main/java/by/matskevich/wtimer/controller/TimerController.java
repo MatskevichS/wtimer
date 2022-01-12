@@ -17,8 +17,11 @@ public class TimerController {
     private Label timeLabel;
     @FXML
     private Button timerActionBtn;
-    @FXML
     private Timer timer;
+
+    public void cancel() {
+        timer.cancel();
+    }
 
     @FXML
     protected void initialize() {
@@ -29,6 +32,7 @@ public class TimerController {
             setStartBtn();
         }
         timer.setTimeField(timeLabel);
+        timer.start();
         timeLabel.setText(timer.getPastTime());
 
         timerActionBtn.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(20), new BorderWidths(1.5))));
@@ -59,20 +63,17 @@ public class TimerController {
     }
 
     private void startTimer() {
-        timer.start();
         timer.setStart(true);
         setPauseBtn();
     }
 
     private void pauseTimer() {
-        timer.stop();
         timer.setPause(true);
         savePastTime(timer);
         setResumeBtn();
     }
 
     private void resumeTimer() {
-        timer.start();
         timer.setPause(false);
         setPauseBtn();
     }
