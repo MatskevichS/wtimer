@@ -17,7 +17,7 @@ public class SaveThread extends Thread {
     @Override
     public void run() {
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("auto_save.dat"))) {
-            TimerDto timerDto = new TimerDto(timer.getTime(), timer.getDays(), timer.isStart(), timer.isPause());
+            TimerDto timerDto = new TimerDto(timer.getTime(), timer.getDays(), timer.getStatus());
             oos.writeObject(timerDto);
         } catch(Exception ex){
             System.out.println(ex.getMessage());

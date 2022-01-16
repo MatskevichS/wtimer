@@ -1,22 +1,22 @@
 package by.matskevich.wtimer.dto;
 
+import by.matskevich.wtimer.domain.Timer.Status;
+
 import java.io.Serializable;
 import java.time.LocalTime;
 
 public class TimerDto implements Serializable {
 
-    private static final long serialVersionUID = 1234567L;
+    private static final long serialVersionUID = 1000001L;
 
     private LocalTime time;
     private Integer days;
-    private boolean isStart;
-    private boolean isPause;
+    private Status status;
 
-    public TimerDto(LocalTime time, Integer days, boolean isStart, boolean isPause) {
+    public TimerDto(LocalTime time, Integer days, Status status) {
         this.time = time;
         this.days = days;
-        this.isStart = isStart;
-        this.isPause = isPause;
+        this.status = status;
     }
 
     public LocalTime getTime() {
@@ -35,19 +35,11 @@ public class TimerDto implements Serializable {
         this.days = days;
     }
 
-    public boolean isStart() {
-        return isStart;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setStart(boolean start) {
-        isStart = start;
-    }
-
-    public boolean isPause() {
-        return isPause;
-    }
-
-    public void setPause(boolean pause) {
-        isPause = pause;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

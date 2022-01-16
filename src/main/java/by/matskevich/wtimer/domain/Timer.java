@@ -6,52 +6,41 @@ import javafx.scene.control.Label;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import static by.matskevich.wtimer.domain.Timer.Status.NONE;
 import static by.matskevich.wtimer.service.TimerService.savePastTime;
 
 
-public class Timer extends Thread {
+public class Timer {
 
     private final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
     private final LocalTime MAX_TIME = LocalTime.of(23, 59, 59);
-    private final Integer ONE = 1;
+    private final Integer TICK_AMOUNT = 100_000_000;
+    private final Integer SAVE_RANGE_MINUTES = 10;
 
     private Label timeField;
     private LocalTime time;
     private Integer days;
-    private boolean isStart;
-    private boolean isCancel;
-    private boolean isPause;
+    private Status status;
 
     {
         days = 0;
         time = LocalTime.of(0, 0, 0);
-        isCancel = false;
+        status = NONE;
     }
 
     public Timer() {
     }
 
-    public Timer(LocalTime time, Integer days, boolean isStart, boolean isPause) {
+    public Timer(LocalTime time, Integer days, Status status) {
         this.time = time;
         this.days = days;
-        this.isStart = isStart;
-        this.isPause = isPause;
+        this.status = status;
     }
 
-    @Override
-    public void run() {
-        try {
-            while (!isCancel) {
-                Thread.sleep(1000);
-                if (isStart && !isPause) {
-                    tick();
-                }
-                Platform.runLater(() -> timeField.setText(getPastTime()));
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+    public enum Status {
+        NONE,
+        START,
+        PAUSE
     }
 
     public LocalTime getTime() {
@@ -70,41 +59,31 @@ public class Timer extends Thread {
         this.days = days;
     }
 
-    public boolean isStart() {
-        return isStart;
-    }
-
-    public void setStart(boolean start) {
-        isStart = start;
-    }
-
-    public void cancel() {
-        isCancel = true;
-    }
-
-    public boolean isPause() {
-        return isPause;
-    }
-
-    public void setPause(boolean pause) {
-        isPause = pause;
-    }
-
     public void setTimeField(Label timeField) {
         this.timeField = timeField;
     }
 
-    private void tick() {
-        time = time.plusSeconds(ONE);
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void tick() {
+        time = time.plusNanos(TICK_AMOUNT);
 
         if (time.equals(MAX_TIME)) {
             days++;
         }
 
         int minutes = time.getMinute();
-        if (minutes > 0 && time.getSecond() == 0 && minutes % 10 == 0) {
+        if (minutes > 0 && time.getSecond() == 0 && minutes % SAVE_RANGE_MINUTES == 0) {
             savePastTime(this);
         }
+
+        Platform.runLater(() -> timeField.setText(getPastTime()));
     }
 
     public String getPastTime() {
@@ -116,8 +95,7 @@ public class Timer extends Thread {
 
     public void dropping() {
         time = LocalTime.of(0, 0, 0);
-        isStart = false;
-        isPause = false;
+        status = NONE;
         savePastTime(this);
         timeField.setText(getPastTime());
     }

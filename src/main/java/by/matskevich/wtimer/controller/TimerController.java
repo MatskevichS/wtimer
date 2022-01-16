@@ -1,6 +1,7 @@
 package by.matskevich.wtimer.controller;
 
 import by.matskevich.wtimer.domain.Timer;
+import by.matskevich.wtimer.service.TimerService;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -8,8 +9,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
+import static by.matskevich.wtimer.domain.Timer.Status.START;
 import static by.matskevich.wtimer.service.TimerService.readPastTime;
-import static by.matskevich.wtimer.service.TimerService.savePastTime;
 
 public class TimerController {
 
@@ -17,22 +18,23 @@ public class TimerController {
     private Label timeLabel;
     @FXML
     private Button timerActionBtn;
-    private Timer timer;
+
+    public Timer timer;
+    TimerService timerService = new TimerService();
 
     public void cancel() {
-        timer.cancel();
+        timerService.stopTick();
     }
 
     @FXML
     protected void initialize() {
         timer = readPastTime();
-        if (timer.isStart()) {
+        if (START.equals(timer.getStatus())) {
            setResumeBtn();
         } else {
             setStartBtn();
         }
         timer.setTimeField(timeLabel);
-        timer.start();
         timeLabel.setText(timer.getPastTime());
 
         timerActionBtn.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(20), new BorderWidths(1.5))));
@@ -40,19 +42,22 @@ public class TimerController {
 
     @FXML
     protected void onTimerActionBtnClick() {
-        if (timer.isStart()) {
-            if (timer.isPause()) {
-                resumeTimer();
-            } else {
-                pauseTimer();
-            }
-        } else {
-            startTimer();
+        switch (timer.getStatus()) {
+            case NONE: timerService.startTimer(timer);
+                setPauseBtn();
+                break;
+            case START: timerService.pauseTimer(timer);
+                setResumeBtn();
+                break;
+            case PAUSE: timerService.resumeTimer(timer);
+                setPauseBtn();
+                break;
         }
     }
 
     @FXML
     protected void onDroppingBtnClick() {
+        timerService.stopTick();
         timer.dropping();
         setStartBtn();
     }
@@ -60,22 +65,6 @@ public class TimerController {
     @FXML
     protected void onMarkBtnClick() {
 
-    }
-
-    private void startTimer() {
-        timer.setStart(true);
-        setPauseBtn();
-    }
-
-    private void pauseTimer() {
-        timer.setPause(true);
-        savePastTime(timer);
-        setResumeBtn();
-    }
-
-    private void resumeTimer() {
-        timer.setPause(false);
-        setPauseBtn();
     }
 
     private void setStartBtn() {
