@@ -1,6 +1,5 @@
 package by.matskevich.wtimer.thread;
 
-
 import by.matskevich.wtimer.domain.Timer;
 
 import java.util.concurrent.locks.ReentrantLock;

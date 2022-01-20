@@ -1,0 +1,9 @@
+#timeStamps {
+    -fx-background-color: WHITESMOKE;
+    -fx-background-radius: 10;
+}
+
+#timeStamps .list-cell {
+     -fx-alignment: center;
+     -fx-font-size: 15;
+ }

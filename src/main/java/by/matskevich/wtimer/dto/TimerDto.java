@@ -3,36 +3,28 @@ package by.matskevich.wtimer.dto;
 import by.matskevich.wtimer.domain.Timer.Status;
 
 import java.io.Serializable;
-import java.time.LocalTime;
+import java.util.LinkedList;
 
 public class TimerDto implements Serializable {
 
-    private static final long serialVersionUID = 1000001L;
+    private static final long serialVersionUID = 1000002L;
 
-    private LocalTime time;
-    private Integer days;
+    private PastTimeDto pastTime;
     private Status status;
+    private LinkedList<PastTimeDto> timeStamps;
 
-    public TimerDto(LocalTime time, Integer days, Status status) {
-        this.time = time;
-        this.days = days;
+    public TimerDto(PastTimeDto pastTime, Status status, LinkedList<PastTimeDto> timeStamps) {
+        this.pastTime = pastTime;
         this.status = status;
+        this.timeStamps = timeStamps;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public PastTimeDto getPastTime() {
+        return pastTime;
     }
 
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    public Integer getDays() {
-        return days;
-    }
-
-    public void setDays(Integer days) {
-        this.days = days;
+    public void setPastTime(PastTimeDto pastTime) {
+        this.pastTime = pastTime;
     }
 
     public Status getStatus() {
@@ -41,5 +33,13 @@ public class TimerDto implements Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public LinkedList<PastTimeDto> getTimeStamps() {
+        return timeStamps;
+    }
+
+    public void setTimeStamps(LinkedList<PastTimeDto> timeStamps) {
+        this.timeStamps = timeStamps;
     }
 }

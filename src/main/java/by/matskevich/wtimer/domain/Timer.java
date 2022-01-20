@@ -4,37 +4,33 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 
 import static by.matskevich.wtimer.domain.Timer.Status.NONE;
 import static by.matskevich.wtimer.service.TimerService.savePastTime;
 
-
 public class Timer {
 
-    private final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
-    private final LocalTime MAX_TIME = LocalTime.of(23, 59, 59);
-    private final Integer TICK_AMOUNT = 100_000_000;
-    private final Integer SAVE_RANGE_MINUTES = 10;
+    private final Integer SAVE_RANGE_MINUTES = 5;
 
     private Label timeField;
-    private LocalTime time;
-    private Integer days;
+    private PastTime pastTime;
     private Status status;
+    private LinkedList<PastTime> timeStamps;
 
     {
-        days = 0;
-        time = LocalTime.of(0, 0, 0);
+        pastTime = new PastTime();
         status = NONE;
+        timeStamps = new LinkedList<>();
     }
 
     public Timer() {
     }
 
-    public Timer(LocalTime time, Integer days, Status status) {
-        this.time = time;
-        this.days = days;
+    public Timer(PastTime pastTime, Status status, LinkedList<PastTime> timeStamps) {
+        this.pastTime = pastTime;
         this.status = status;
+        this.timeStamps = timeStamps;
     }
 
     public enum Status {
@@ -43,20 +39,12 @@ public class Timer {
         PAUSE
     }
 
-    public LocalTime getTime() {
-        return time;
+    public PastTime getPastTime() {
+        return pastTime;
     }
 
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    public Integer getDays() {
-        return days;
-    }
-
-    public void setDays(Integer days) {
-        this.days = days;
+    public void setPastTime(PastTime pastTime) {
+        this.pastTime = pastTime;
     }
 
     public void setTimeField(Label timeField) {
@@ -71,32 +59,29 @@ public class Timer {
         this.status = status;
     }
 
+    public LinkedList<PastTime> getTimeStamps() {
+        return timeStamps;
+    }
+
+    public void setTimeStamps(LinkedList<PastTime> timeStamps) {
+        this.timeStamps = timeStamps;
+    }
+
     public void tick() {
-        time = time.plusNanos(TICK_AMOUNT);
-
-        if (time.equals(MAX_TIME)) {
-            days++;
-        }
-
+        pastTime.tick();
+        LocalTime time = pastTime.getTime();
         int minutes = time.getMinute();
         if (minutes > 0 && time.getSecond() == 0 && minutes % SAVE_RANGE_MINUTES == 0) {
             savePastTime(this);
         }
 
-        Platform.runLater(() -> timeField.setText(getPastTime()));
-    }
-
-    public String getPastTime() {
-        if (days > 0) {
-            return days + " д., " + time.format(TIME_FORMAT);
-        }
-        return time.format(TIME_FORMAT);
+        Platform.runLater(() -> timeField.setText(pastTime.toString()));
     }
 
     public void dropping() {
-        time = LocalTime.of(0, 0, 0);
+        pastTime = new PastTime();
         status = NONE;
         savePastTime(this);
-        timeField.setText(getPastTime());
+        timeField.setText(pastTime.toString());
     }
 }

@@ -3,11 +3,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="vBox" alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11" fx:controller="by.matskevich.wtimer.controller.TimerController">
+<VBox fx:id="vBox" alignment="CENTER" prefHeight="400.0" prefWidth="550.0" spacing="20.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="by.matskevich.wtimer.controller.TimerController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -17,8 +18,9 @@
          <Font size="40.0" />
       </font></Label>
     <HBox alignment="CENTER" spacing="10.0">
-        <Button fx:id="timerActionBtn" onAction="#onTimerActionBtnClick" prefWidth="110.0" text="Начать" />
-        <Button fx:id="timerMarkBtn" onAction="#onMarkBtnClick" prefWidth="110.0" text="Пометить" visible="false" />
-        <Button fx:id="timerDroppingBtn" onAction="#onDroppingBtnClick" prefWidth="110.0" style="-fx-background-color: LIGHTSALMON; -fx-background-insets: 0; -fx-background-radius: 20; -fx-border-color: GRAY; -fx-border-width: 1.5; -fx-border-radius: 20;" text="Сбросить" />
+        <Button fx:id="timerActionBtn" onAction="#onTimerActionBtnClick" prefWidth="130.0" prefHeight="35" style="-fx-background-color: LIGHTGREEN; -fx-background-insets: 0; -fx-background-radius: 20; -fx-border-color: GRAY; -fx-border-width: 1.5; -fx-border-radius: 20;" text="Начать" />
+        <Button fx:id="timerMarkBtn" onAction="#onMarkBtnClick" prefWidth="130.0" text="Пометить" visible="false" />
+        <Button fx:id="timerDroppingBtn" onAction="#onDroppingBtnClick" prefWidth="130.0" style="-fx-background-color: LIGHTSALMON; -fx-background-insets: 0; -fx-background-radius: 20; -fx-border-color: GRAY; -fx-border-width: 1.5; -fx-border-radius: 20;" text="Сбросить" />
     </HBox>
+   <ListView fx:id="timeStamps" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="149.0" prefWidth="120.0" stylesheets="@../style/style.css" />
 </VBox>
