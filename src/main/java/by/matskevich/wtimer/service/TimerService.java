@@ -64,7 +64,7 @@ public class TimerService {
         List<String> result = new ArrayList<>();
         for (PastTime pastTime : timeStamps) {
             int elementNumber = timeStamps.size() - timeStamps.indexOf(pastTime);
-            result.add(elementNumber + ". " + pastTime.toString());
+            result.add(elementNumber + ". " + pastTime);
         }
         return result;
     }
