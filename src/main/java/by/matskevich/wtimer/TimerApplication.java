@@ -13,7 +13,7 @@ public class TimerApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TimerApplication.class.getResource("timer-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 550, 400);
-        stage.setTitle("WTimer v.0.4");
+        stage.setTitle("WTimer v.0.5");
         stage.setScene(scene);
         stage.show();
 
