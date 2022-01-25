@@ -7,6 +7,8 @@ import by.matskevich.wtimer.mapper.TimerMapper;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
+import static by.matskevich.wtimer.domain.Timer.Status.PAUSE;
+
 public class SaveThread extends Thread {
 
     private final Timer timer;
@@ -19,6 +21,7 @@ public class SaveThread extends Thread {
     public void run() {
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("auto_save.dat"))) {
             TimerDto timerDto = TimerMapper.mapDomainToDto(timer);
+            timerDto.setStatus(PAUSE);
             oos.writeObject(timerDto);
         } catch(Exception ex){
             System.out.println(ex.getMessage());
