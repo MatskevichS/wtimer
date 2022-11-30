@@ -10,8 +10,8 @@ public class TimerDto implements Serializable {
     private static final long serialVersionUID = 1000002L;
 
     private PastTimeDto pastTime;
+    private PastTimeDto pastTime;
     private Status status;
-    private LinkedList<PastTimeDto> timeStamps;
 
     public TimerDto(PastTimeDto pastTime, Status status, LinkedList<PastTimeDto> timeStamps) {
         this.pastTime = pastTime;
